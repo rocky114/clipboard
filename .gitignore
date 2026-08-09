@@ -1,0 +1,14 @@
+# Claude Code 本地数据
+.claude/
+
+# 构建产物
+build/
+cmake-build-*/
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+*.user
