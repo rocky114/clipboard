@@ -3,6 +3,7 @@
 #include <QDebug>
 
 #include "clipboardmanager.h"
+#include "clipboardstore.h"
 
 int main(int argc, char *argv[])
 {
@@ -17,10 +18,16 @@ int main(int argc, char *argv[])
     mainWindow.resize(800, 600);
     mainWindow.show();
 
-    // 阶段 1:监听剪贴板,暂用控制台输出验证,后续阶段 3 再接到 UI 上
+    // 阶段 2:历史数据管理 + 持久化
+    ClipboardStore store;
+    store.loadFromJson(); // 启动时加载历史
+    qDebug().noquote() << "历史文件:" << store.historyFilePath();
+
+    // 阶段 1:监听剪贴板 → 存入历史。控制台输出保留,阶段 3 接到 UI 上
     ClipboardManager manager;
     QObject::connect(&manager, &ClipboardManager::itemAdded,
-                     [](const ClipboardItem &item) {
+                     [&store](const ClipboardItem &item) {
+                         store.addItem(item);
                          qDebug().noquote()
                              << item.timestamp.toString(Qt::ISODate)
                              << "|" << item.text.left(50);

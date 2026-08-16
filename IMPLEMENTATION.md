@@ -43,13 +43,15 @@
 
 ## 阶段 2:数据管理 (ClipboardStore)
 
-- [ ] `clipboardstore.h/.cpp` — 持有 `QList<ClipboardItem>`
+- [x] `clipboardstore.h/.cpp` — 持有 `QList<ClipboardItem>`
   - `addItem()`(插入头部)、`removeItem(index)`、`clear()`
   - `maxCount = 100`,超限丢弃尾部
-  - 建议用信号 `changed()` 通知刷新,而不是让 UI 直接碰列表
-- [ ] (可选)持久化:`saveToJson()/loadFromJson()`
-  - 存 `~/.clipboard_history.json` 或 `QStandardPaths::AppDataLocation`
-  - 启动时加载,退出时保存
+  - 信号 `changed()` 通知刷新,UI 不直接碰列表
+- [x] 持久化:`saveToJson()/loadFromJson()`
+  - 存 `QStandardPaths::AppDataLocation/history.json`
+    (macOS 实际路径:`~/Library/Application Support/clipboard/clipboard/history.json`)
+  - 每次增删清后自动保存(崩溃安全),启动时加载
+  - 时间戳存 UTC ISO8601,加载时转本地时区
 
 ## 阶段 3:UI (MainWindow)
 
