@@ -7,6 +7,11 @@
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
+    app.setApplicationName("clipboard");
+    app.setApplicationVersion("1.0");
+    app.setOrganizationName("clipboard");
+
+    
     QMainWindow mainWindow;
     mainWindow.setWindowTitle("My Qt Application");
     mainWindow.resize(800, 600);

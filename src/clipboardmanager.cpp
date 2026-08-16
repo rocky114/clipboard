@@ -8,12 +8,11 @@ namespace {
 constexpr int kPollIntervalMs = 250; // 轮询间隔:越短越不易漏,250ms 足够日常使用
 }
 
-ClipboardManager::ClipboardManager(QObject *parent)
-    : QObject(parent)
+ClipboardManager::ClipboardManager(QObject *parent) : QObject(parent)
 {
     // 双通道:信号即时 + 轮询兜底(macOS 后台场景信号不可靠)
-    connect(QGuiApplication::clipboard(), &QClipboard::dataChanged,
-            this, &ClipboardManager::onClipboardChanged);
+    connect(QGuiApplication::clipboard(), &QClipboard::dataChanged, this, &ClipboardManager::onClipboardChanged);
+    
     m_pollTimer.setInterval(kPollIntervalMs);
     connect(&m_pollTimer, &QTimer::timeout, this, &ClipboardManager::onPollTimer);
     m_pollTimer.start();

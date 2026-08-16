@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.28)
 project(clipboard VERSION 1.0.0 LANGUAGES CXX)
 
 set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
 
 set(Qt6_DIR "/opt/homebrew/opt/qt/lib/cmake/Qt6" CACHE PATH "directory where Qt6Config.cmake exists")
 
