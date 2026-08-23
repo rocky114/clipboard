@@ -15,7 +15,7 @@ option(ENABLE_SANITIZERS "Enable sanitizers" OFF)
 
 find_package(Qt6 COMPONENTS Core Gui Widgets REQUIRED)
 
-add_executable(clipboard src/main.cpp src/clipboardmanager.cpp src/clipboardstore.cpp)
+add_executable(clipboard src/main.cpp src/clipboardmanager.cpp src/clipboardstore.cpp src/mainwindow.cpp)
 target_link_libraries(clipboard PRIVATE project_options Qt6::Core Qt6::Gui Qt6::Widgets)
 
 

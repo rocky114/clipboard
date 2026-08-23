@@ -46,31 +46,36 @@
 - [x] `clipboardstore.h/.cpp` — 持有 `QList<ClipboardItem>`
   - `addItem()`(插入头部)、`removeItem(index)`、`clear()`
   - `maxCount = 100`,超限丢弃尾部
-  - 信号 `changed()` 通知刷新,UI 不直接碰列表
+  - **不做实时 UI 通知**:窗口每次展示前 `loadFromJson()` 主动拉取
 - [x] 持久化:`saveToJson()/loadFromJson()`
   - 存 `QStandardPaths::AppDataLocation/history.json`
     (macOS 实际路径:`~/Library/Application Support/clipboard/clipboard/history.json`)
   - 每次增删清后自动保存(崩溃安全),启动时加载
   - 时间戳存 UTC ISO8601,加载时转本地时区
 
-## 阶段 3:UI (MainWindow)
+## 阶段 3:UI(托盘驻留 + 按需加载窗口)— 核心架构
 
-- [ ] 界面元素:
-  - 中央 `QListWidget`(或 `QListView` + `QAbstractListModel` — MVP 用 ListWidget 即可)
-  - 每行显示:时间 + 内容预览(超长省略 `elide` / `setToolTip` 显示全文)
-- [ ] 新条目插到顶部(配合阶段 2 的 `changed()` 信号刷新)
-- [ ] **回选复制**:双击或回车该行 →
-  - 调用 `clipboard()->setText(...)` 之前置 `m_selfWrite = true`
-  - 同时把该条目挪到列表头部(置顶)
-- [ ] 右键菜单:`复制` / `删除该项` / `清空历史`
-- [ ] 状态栏显示当前剪贴板文本(实时跟随,可用单行省略)
+真实场景:剪贴板管理器启动即驻留托盘,不显示窗口;用户点击托盘菜单才展示窗口,
+窗口每次展示前从文件重新读取最新历史,不做实时 UI 刷新。
+
+- [x] 启动驻留 `QSystemTrayIcon`,`setQuitOnLastWindowClosed(false)`
+  - 托盘右键菜单:`显示剪贴板历史` / `退出`
+  - 无托盘环境(开发调试)自动回退为直接显示窗口
+  - 图标:代码生成的占位图标(剪贴板卡片造型),正式图标后续换资源文件
+- [x] `MainWindow`:`QListWidget` 展示历史
+  - 每行:时间(`MM-dd HH:mm:ss`) + 内容预览(换行折叠、超长省略,tooltip 显示全文)
+- [x] `showAndRefresh()`:展示前 `loadFromJson()` 从文件重载 → 刷新列表 → 显示置顶
+- [x] **回选复制**:双击/回车 → `manager->copyToClipboard()`(内部预登记防回环)+ 置顶(删旧位+插头部)
+- [x] 右键菜单:`复制` / `删除该项` / `清空历史`(带确认弹窗)
+- [x] `closeEvent`:忽略关闭事件,只隐藏窗口,应用继续驻留托盘
 
 ## 阶段 4:增强(按需)
 
-- [ ] 系统托盘 `QSystemTrayIcon`,关闭窗口隐藏到托盘,托盘菜单列出最近 5 条
 - [ ] 搜索过滤:顶部 `QLineEdit`,按内容过滤显示(注意过滤后序号与真实索引映射)
 - [ ] 图片历史:`clipboard()->image()` 非空时存 `QImage`,列表显示缩略图
 - [ ] 全局快捷键(如 Cmd+Shift+V):需 macOS 权限 / `QHotkey` 第三方库,放最后
+- [ ] 正式应用图标(资源文件替换占位图标)
+- [ ] 托盘菜单列出最近 5 条可直接复制
 
 ---
 

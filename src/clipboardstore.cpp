@@ -20,7 +20,6 @@ void ClipboardStore::addItem(const ClipboardItem &item)
     m_items.prepend(item); // 头部 = 最新
     while (m_items.size() > kMaxCount) // 超限淘汰最旧的(尾部)
         m_items.removeLast();
-    emit changed();
     saveToJson();
 }
 
@@ -29,14 +28,12 @@ void ClipboardStore::removeItem(int index)
     if (index < 0 || index >= m_items.size())
         return;
     m_items.removeAt(index);
-    emit changed();
     saveToJson();
 }
 
 void ClipboardStore::clear()
 {
     m_items.clear();
-    emit changed();
     saveToJson();
 }
 
@@ -122,6 +119,5 @@ bool ClipboardStore::loadFromJson()
     while (m_items.size() > kMaxCount)
         m_items.removeLast();
 
-    emit changed();
     return true;
 }
