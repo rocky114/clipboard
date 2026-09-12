@@ -24,7 +24,7 @@ class ClipboardManager : public QObject
 public:
     explicit ClipboardManager(QObject *parent = nullptr);
 
-    // 程序自己回写剪贴板(阶段 3 的"回选复制"会用到)。
+    // 程序自己回写剪贴板(窗口的"回选复制"会用到)。
     // 统一走这里:先把内容预登记为"已见过",轮询/信号路径都会因去重而跳过,
     // 从而避免把自己写入的内容当成新复制记录。
     void copyToClipboard(const QString &text);
@@ -38,7 +38,7 @@ private slots:
     void onPollTimer();
 
 private:
-    QTimer   m_pollTimer;   // 轮询定时器,保证后台也能捕获
+    QTimer   m_pollTimer;    // 轮询定时器,保证后台也能捕获
     QString  m_lastRecorded; // 最近一条已记录内容,用于去重
 };
 

@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 
-#include <QCloseEvent>
 #include <QListWidget>
 #include <QListWidgetItem>
 #include <QMenu>
@@ -28,17 +27,10 @@ MainWindow::MainWindow(ClipboardStore *store, ClipboardManager *manager,
 
 void MainWindow::showAndRefresh()
 {
-    refreshList(); // 每次展示前从文件重新读取最新历史
+    refreshList(); // 展示前从文件重新读取最新历史
     show();
     raise();
     activateWindow();
-}
-
-void MainWindow::closeEvent(QCloseEvent *event)
-{
-    // 关闭窗口不退出应用,只是隐藏,继续驻留托盘监听剪贴板
-    event->ignore();
-    hide();
 }
 
 void MainWindow::refreshList()

@@ -8,8 +8,8 @@ class QListWidgetItem;
 class ClipboardStore;
 class ClipboardManager;
 
-// 历史浏览窗口:默认隐藏,点击托盘菜单时才展示。
-// 剪贴板监听是后台进行的,窗口每次展示前从文件重新加载历史,不做实时刷新。
+// 历史浏览窗口:启动即显示。剪贴板监听在后台持续进行,
+// 有新记录时由 main.cpp 连接 itemAdded → refreshList() 即时刷新列表。
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -21,8 +21,8 @@ public:
     // 从文件重新加载历史并刷新列表,然后显示/置顶窗口
     void showAndRefresh();
 
-protected:
-    void closeEvent(QCloseEvent *event) override; // 点关闭 = 隐藏,应用留在托盘
+public slots:
+    void refreshList(); // 从文件重载历史并重建列表
 
 private slots:
     void onItemActivated(QListWidgetItem *item); // 双击/回车:回选复制并置顶
@@ -31,7 +31,6 @@ private slots:
     void clearAll();
 
 private:
-    void refreshList();    // 从文件重载历史并重建列表
     void setupContextMenu();
 
     ClipboardStore   *m_store;
