@@ -8,7 +8,7 @@
 #include "clipboardmanager.h" // ClipboardItem
 
 // 历史数据管理:持有剪贴板历史列表,负责增删清、上限淘汰与 JSON 持久化。
-// 窗口每次展示前通过 loadFromJson() 主动拉取最新数据,不做实时 UI 通知。
+// 构造时从文件加载已有历史;每次增删清之后自动落盘。
 class ClipboardStore : public QObject
 {
     Q_OBJECT

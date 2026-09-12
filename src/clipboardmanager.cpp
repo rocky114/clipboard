@@ -6,6 +6,10 @@
 
 ClipboardManager::ClipboardManager(QObject *parent) : QObject(parent)
 {
+    // 启动基线:开机前就在剪贴板里的内容不算"本次复制",否则每次重启都会
+    // 把它当新条目再记一遍(历史里出现重复行,且时间戳是假的)。
+    m_lastRecorded = QGuiApplication::clipboard()->text();
+
     // 双通道:信号即时 + 轮询兜底(macOS 后台场景信号不可靠)
     connect(QGuiApplication::clipboard(), &QClipboard::dataChanged, this, &ClipboardManager::onClipboardChanged);
 

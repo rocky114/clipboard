@@ -13,6 +13,9 @@
 ClipboardStore::ClipboardStore(QObject *parent)
     : QObject(parent)
 {
+    // 启动即加载:否则内存里是空列表,第一条新记录通过 saveToJson() 落盘时
+    // 会把上次运行的历史整个覆盖掉(窗口不打开就一直不会读回文件)。
+    loadFromJson();
 }
 
 void ClipboardStore::addItem(const ClipboardItem &item)
